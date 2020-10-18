@@ -15,7 +15,7 @@ plugins:
 
 
 header_pages:
-  - header.md
+  - index.md
 
 
 style: dark
