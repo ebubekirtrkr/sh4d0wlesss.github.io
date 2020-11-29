@@ -8,6 +8,7 @@ twitter_username: sh4d0wlesss
 github_username:  sh4d0wlesss
 
 # Build settings
+markdown: kramdown
 #theme: minima
 remote_theme: b2a3e8/jekyll-theme-console
 plugins:
@@ -21,7 +22,7 @@ header_pages:
 
 style: dark
 
-footer: '<a target="_blank" href="https://github.com/sh4d0wlesss/">github</a> | <a target="_blank" href="https://twitter.com/sh4d0wlesss">twitter</a> | <a target="_blank" href="https://www.linkedin.com/in/faruk-arslan/">linkedin</a> '
+footer: '<a target="_blank" href="https://ctftime.org/user/66807">CTFtime</a> |<a target="_blank" href="https://github.com/sh4d0wlesss/">github</a> | <a target="_blank" href="https://twitter.com/sh4d0wlesss">twitter</a> | <a target="_blank" href="https://www.linkedin.com/in/faruk-arslan/">linkedin</a> '
 
 # Exclude from processing.
 # The following items will not be processed, by default.
