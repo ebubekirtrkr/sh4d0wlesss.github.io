@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Protostar Stack Writeup"
-date:   2020-11-29 16:27:5900 +0300
+date:   2020-11-29 16:27:00 +0300
 categories: Binary Exploitation
 ---
 
