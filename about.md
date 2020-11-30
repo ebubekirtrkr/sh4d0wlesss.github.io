@@ -3,6 +3,6 @@ title: /hakkımda
 layout: page
 permalink: /hakkımda
 ---
-# kim lan bu şadovlıs
+# Kim bu şadovlıs
 
-deneme123
+Siber güvenlik konusunda bi şeyler yapmaya çalışan bilgisayar mühendisliği öğrencisi.
