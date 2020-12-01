@@ -5,4 +5,4 @@ permalink: /hakkımda
 ---
 # Kim bu şadovlıs
 
-Siber güvenlik konusunda bi şeyler yapmaya çalışan bilgisayar mühendisliği öğrencisi.
+Siber güvenlik konusunda bi şeyler yapmaya çalışan ama ne yaptığını da bilmeyen bilgisayar mühendisliği öğrencisi.
