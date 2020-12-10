@@ -12,7 +12,7 @@ Merhaba, bu yazıda önceki yazıda çözmüş olduğumuz protostar serisinin `f
 Bu soruları çözmeden önce izlemenizi tavsiye ederim, videoda biraz ses sorunu var ancak yine de izlenebilir seviyede.
 
 Şimdi bu videoyu izlediğinizi varsayarak printf fonksiyonu çağırıldığında stack nasıl bir hal alıyordu bakalım:
-![deneme](/assets/images/Stack-of-the-printf-function-call.png)
+![deneme](/assets/images/Stack-of-the-printf-function-call.png  =425x325)
 * Resim kaynağı: [Link](https://www.researchgate.net/publication/237237332_MUTATION-BASED_TESTING_OF_BUFFER_OVERFLOWS_SQL_INJECTIONS_AND_FORMAT_STRING_BUGS)
 
 Burada printf çalışmaya başladığında bufferdan, daha doğrusu verilen textin başından ekrana yazmaya başlıyor. Bu stringin adresi de pointer olarak return adresinin hemen altında bulunuyor. Herhangi bir format spesifier'a geldiğinde ise o format spesifier ne tipte veri okuyacak ise o miktarda veriyi hemen alttan yani format string pointerin altından çekmeye başlıyor. Bu olaylar tabiki normal senaryoda böyle olmakta ancak eğer biz herhangi bir argüman pushlamadan(i  ve str gibi) sadece format spesifier verirsek ne olur? Stackden veri okumaya başlarız ve ileride göreceğimiz üzere veri yazma gibi işlemler de yapacağız. İlk örnek ile başlayalım.
