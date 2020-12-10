@@ -8,7 +8,7 @@ categories: Binary Exploitation
 
 
 Merhaba, bu yazıda önceki yazıda çözmüş olduğumuz protostar serisinin `format` bölümünü anlatmaya çalışacağım. Adından da anlaşıldığı üzere bu bölümde format string zafiyetiyle ilgili sorular çözmeye çalışacağız. Öncelikle format string nedir ve printf fonksiyonu nasıl çalışır, fonksiyon çağırıldığında stackde nasıl bir düzen olur bunları bilmemiz lazım. Bu konu için çok güzel bir video var.
-* Video: (Link)[https://www.youtube.com/watch?v=df5P5DiBLng]
+* Video: [Link](https://www.youtube.com/watch?v=df5P5DiBLng)
 Bu soruları çözmeden önce izlemenizi tavsiye ederim, videoda biraz ses sorunu var ancak yine de izlenebilir seviyede.
 
 Şimdi bu videoyu izlediğinizi varsayarak printf fonksiyonu çağırıldığında stack nasıl bir hal alıyordu bakalım:
