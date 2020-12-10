@@ -15,7 +15,7 @@ Bu soruları çözmeden önce izlemenizi tavsiye ederim, videoda biraz ses sorun
 ![deneme](/assets/images/Stack-of-the-printf-function-call.png)
 * Resim kaynağı: [Link](https://www.researchgate.net/publication/237237332_MUTATION-BASED_TESTING_OF_BUFFER_OVERFLOWS_SQL_INJECTIONS_AND_FORMAT_STRING_BUGS)
 
-Burada printf çalışmaya başladığında bufferdan, daha doğrusu verilen textin başından ekrana yazmaya başlıyor. Bu stringin adresi de pointer olarak return adresinin hemen altında bulunuyor. Herhangi bir format spesifier'a geldiğinde ise o format spesifier ne tipte veri okuyacak ise o miktarda veriyi hemen alttan yani format string pointerin altından çekmeye başlıyor. Bu olaylar tabiki normal senaryoda böyle olmakta ancak eğer biz herhangi bir argüman pushlamadan(i  ve str gibi) sadece format spesifier verirsek ne olur? Stackden veri okumaya başlarız ve ileride göreceğimiz üzere ceri yazma gibi işlemler de yapacağız. İlk örnek ile başlayalım.
+Burada printf çalışmaya başladığında bufferdan, daha doğrusu verilen textin başından ekrana yazmaya başlıyor. Bu stringin adresi de pointer olarak return adresinin hemen altında bulunuyor. Herhangi bir format spesifier'a geldiğinde ise o format spesifier ne tipte veri okuyacak ise o miktarda veriyi hemen alttan yani format string pointerin altından çekmeye başlıyor. Bu olaylar tabiki normal senaryoda böyle olmakta ancak eğer biz herhangi bir argüman pushlamadan(i  ve str gibi) sadece format spesifier verirsek ne olur? Stackden veri okumaya başlarız ve ileride göreceğimiz üzere veri yazma gibi işlemler de yapacağız. İlk örnek ile başlayalım.
 ## Format 0
 Kaynak kod:
 ```c
