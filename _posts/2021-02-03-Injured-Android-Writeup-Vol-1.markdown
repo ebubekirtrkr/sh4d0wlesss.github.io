@@ -39,7 +39,6 @@ vulnWebView ayarlarından javascript enable edilmiş, bu sayede verdiğimiz gird
 ```js
 <script>alert("shadow")</script>
 ```
-XSS SONUC FOTOSU GELECEK
 
 ## 1. FLAG ONE - LOGIN
 Bu aşamada bizden flagi bulup submit etmemizi istiyor. Aşağıya eklenen ünlem butonuyla hint alınıyor sanırım ama bu yazıda onu kullanmadan çözmeye çalışacağım(Gerçi ister istemez kodda görüyorsunuz :D ). İlgili koda bakalım.
