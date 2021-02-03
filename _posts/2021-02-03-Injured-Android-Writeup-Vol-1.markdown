@@ -56,9 +56,7 @@ public final void submitFlag(View view) {
         }
 
 ```
-Eğer girdiğimiz input "F1ag_0n3" ise intent ile FlagOneSuccess sınıfını çağırıyor. Deneyelim:
-
-FLAG 1 BAŞARI SONUCU 
+Eğer girdiğimiz input "F1ag_0n3" ise intent ile FlagOneSuccess sınıfını çağırıyor. 
 
 Şimdi burada kafaya takılabilecek sorun şu: biz bu fonksiyonun strcmp tarzı bi şey olduğunu nerden anladık. Kod obfuscate edildiği için bize direkt olarak fonksiyon adlarını yazmak yerine harf falan yazıyor. biz bu fonksiyonun gerçekte ne yaptığına bakmak için tanımlandığı yere bakacağız. Koddaki fonksiyon adı olan "a" harfine sağ tıklayıp "go to decleration" dersek bizi tanımlandığı yere götürür. Koda bakarsak bir string karşılaştırma işlemi olduğunu zaten anlıyoruz:
 ```java
@@ -89,7 +87,6 @@ Starting: Intent { cmp=b3nac.injuredandroid/.b25lActivity }
 ```
 Burada -n parametresi ile gideceğimiz komponenti belirttik ve bize 2. flag geldi. Listede yazan diğer export edilmiş aktiviteyi verince bi login ekranı geliyor, demek ki o başka flagin adımıymış :)
 
-FLAG 2 BAŞARI SONUCU 
 
 ## 3. FLAG THREE - RESOURCES
 Koduna bakalım:
@@ -161,9 +158,7 @@ private FlagFiveReceiver u = new FlagFiveReceiver();
 
 ```
 Kodda en başta bir broadcast receiver tanımlanmış. Broadcast receiver ile sistemden gelecek olan broadcast çağrılarını dinleyip ona göre işlem yapıyoruz, fonksiyon tetikliyoruz diyebiliriz. Ardından sendBroadcast metodu ile broadcast yapılıyor. <br>
-b3nac.injuredandroid.FlagFiveReceiver sınıfında da diğer kodda tanımlanmış olan intent ile gelen broadcastlerin sayısına bakıp ona göre bize flag verriyot. 3 kez kodu tetiklediğimizde flag karşımızda:
-
- FLAG 5 BAŞARI SONUCU
+b3nac.injuredandroid.FlagFiveReceiver sınıfında da diğer kodda tanımlanmış olan intent ile gelen broadcastlerin sayısına bakıp ona göre bize flag verriyot. 3 kez kodu tetiklediğimizde flag çıkıyor.
 
 ## 6. FLAG SIX - LOGIN 3
  Bu aşamada da bizden direkt olarak flag istiyor.Koda bakalım:
