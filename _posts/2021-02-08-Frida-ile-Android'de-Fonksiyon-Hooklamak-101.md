@@ -114,8 +114,7 @@ $ frida -U -f owasp.mstg.uncrackable1 -l script.js --no-pause
 // -l SCRIPT, --load=SCRIPT    load SCRIPT
 // --no-pause                  automatically start main thread after startup
 ```
-
-![](/assets/images/root_bypass1.png)
+<img src="/assets/images/potter/root_bypass1.png"  width="789"  height="305">
 
 Resimde de görüldüğü üzere uygulamamız açıldı, çıkan uyarıda ok dediğimizde uygulamadan çıkmak yerine log a stringi bastırdı. Şimdi bizden bir secret string bulmamızı istiyor. Koda bakalım:
 ```java
@@ -197,7 +196,7 @@ Java.perform(function(){
     }
 });
 ```
-![](/assets/images/aes_bypass1.png)
+<img src="/assets/images/potter/aes_bypass1.png"  width="789"  height="305">
 <br>
 Scripti çalıştırdıktan sonra root uyarısına ok dedik, ardından AES fonksiyonunun tetiklenmesi için yanlış bir input verdik ve byte array geldi.
 ```
