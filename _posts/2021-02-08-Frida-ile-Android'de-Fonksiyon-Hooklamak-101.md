@@ -233,6 +233,7 @@ Java.perform(function(){
     }
 });
 ```
+<br>
 ```bash
 [sh4d0wless@paradise uncrackable-lvl1]$ frida -U -f owasp.mstg.uncrackable1 -l script.js --no-pause
      ____
@@ -251,7 +252,7 @@ Spawned `owasp.mstg.uncrackable1`. Resuming main thread!
 Sonuc:I want to believe
 
 ```
-Bu şekilde sorumuzu çözmüş olduk. En temel şekilde frida kullanımı bu şekilde diyebiliriz. Frida baya işlevsel ve kapsamlı bir tool olduğundan dolayı ileride öğrendikçe daha farklı konularda yazı yazmaya çalışacağım. Bu konularda çok güzel içerikleri olan bir kaç blog linkini de buraya bırakayım:
+Bu şekilde sorumuzu çözmüş olduk. En temel şekilde frida kullanımı bu şekilde diyebiliriz. Frida baya işlevsel ve kapsamlı bir tool olduğundan dolayı ileride öğrendikçe daha farklı konularda yazı yazmaya çalışacağım. Bu konularda çok güzel içerikleri olan birkaç blog linkini de buraya bırakayım:
 - https://alp.run/
 - https://eybisi.run
 - https://11x256.github.io/
